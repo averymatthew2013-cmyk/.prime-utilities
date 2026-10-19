@@ -649,3 +649,87 @@ export function getRandomColor() {
 }
 
 export default botConfig;
+const {
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
+  ChannelType,
+  MessageFlags,
+} = require("discord.js");
+
+const ALLOWED_ROLE = "yourroleidhere";
+const FORUM_CHANNEL_ID = "yourforumidhere";
+
+const forumTags = {
+  "ELS Designer": "yourforumtagid1",
+  "Discord Designer": "yourforumtagid2",
+  "Livery Designer": "yourforumtagid3",
+  "Clothing Designer": "yourforumtagid4",
+  "Photography Designer": "yourforumtagid5",
+  "Graphic Designer": "yourforumtagid6",
+};
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("portfolio")
+    .setDescription("Create a private portfolio post for a designer.")
+    .addUserOption((option) =>
+      option
+        .setName("designer")
+        .setDescription("The designer whose portfolio post you want to create.")
+        .setRequired(true),
+    ),
+
+  async execute(interaction) {
+    const designer = interaction.options.getUser("designer");
+    const member = interaction.member;
+
+    if (!member.roles.cache.has(ALLOWED_ROLE)) {
+      return interaction.reply({
+        content: "You do not have permission to use this command.",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    const designerMember = await interaction.guild.members
+      .fetch(designer.id)
+      .catch(() => null);
+    if (
+      !designerMember ||
+      !designerMember.roles.cache.has("yourroleidhere") // this checks if the designer has the required role to have a portfolio btw
+    ) {
+      return interaction.reply({
+        content: `**${designer.username}** does not have the required role to have a portfolio.`,
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    const forum = interaction.guild.channels.cache.get(FORUM_CHANNEL_ID);
+    if (!forum || forum.type !== ChannelType.GuildForum) {
+      return interaction.reply({
+        content: "The configured channel is not a forum or was not found.",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId(`portfolio_tags_${designer.id}`)
+      .setPlaceholder("Select one or more tags to apply")
+      .setMinValues(1)
+      .setMaxValues(5)
+      .addOptions(
+        Object.entries(forumTags).map(([name, id]) => ({
+          label: name,
+          value: id,
+        })),
+      );
+
+    const row = new ActionRowBuilder().addComponents(menu);
+
+    return interaction.reply({
+      content: `Select tags to apply to **${designer.username}**'s portfolio:`,
+      components: [row],
+      flags: MessageFlags.Ephemeral,
+    });
+  },
+};
