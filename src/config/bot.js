@@ -657,16 +657,16 @@ const {
   MessageFlags,
 } = require("discord.js");
 
-const ALLOWED_ROLE = "yourroleidhere";
-const FORUM_CHANNEL_ID = "yourforumidhere";
+const ALLOWED_ROLE = "1561511287182065765";
+const FORUM_CHANNEL_ID = "1561536771244953671";
 
 const forumTags = {
-  "ELS Designer": "yourforumtagid1",
-  "Discord Designer": "yourforumtagid2",
-  "Livery Designer": "yourforumtagid3",
-  "Clothing Designer": "yourforumtagid4",
-  "Photography Designer": "yourforumtagid5",
-  "Graphic Designer": "yourforumtagid6",
+  "ELS Designer": "1561537608268390478",
+  "Discord Designer": "1561537727353200670",
+  "Livery Designer": "1561537638693998624",
+  "Clothing Designer": "1561537800074170409",
+  "Photography Designer": "1561537889718767656",
+  "Graphic Designer": "1561537769745027152",
 };
 
 module.exports = {
@@ -696,7 +696,7 @@ module.exports = {
       .catch(() => null);
     if (
       !designerMember ||
-      !designerMember.roles.cache.has("yourroleidhere") // this checks if the designer has the required role to have a portfolio btw
+      !designerMember.roles.cache.has("1561511329922027560") // this checks if the designer has the required role to have a portfolio btw
     ) {
       return interaction.reply({
         content: `**${designer.username}** does not have the required role to have a portfolio.`,
